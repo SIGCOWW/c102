@@ -2,7 +2,6 @@
 @<author>{AIメスガキには魂がない, lrks;twitter:__lrks__}
 //profile{
 今期は白聖女と黒牧師です。
-TODOみて
 //}
 //lead{
 「精算機作るよ！」の続編、厳しく改善致します。という内容です。
@@ -45,7 +44,7 @@ TODOみて
   当初は外注でアクリル+UV印刷を想定していましたが値段が高く、今回はハンドメイドとして3Dプリンタ造形+熱転写でパネルを作成しました。
 
 本稿ではこの問題の詳細と改善の内容について述べます。
-また、さらなる解析のため券売機を追加購入しましたので、この輸送の様子についても紹介します。
+また、さらなる解析をする@<bou>{つもりで}と券売機を追加購入しましたので、この輸送についてもおまけとして記載します。
 
 
 == 設営・撤収が大変すぎる問題
@@ -56,14 +55,14 @@ TODOみて
  * ビルバリ
  * バーコードリーダー（QRコード決済用）
  * Square Terminal（クレジットカード・電子マネー決済用）
- * Square Terminal専用ハブとACアダプタ
- * コインメック・ビルバリ制御基板およびACアダプタ
+ * Square Terminal専用ハブ
+ * コインメック/ビルバリ制御基板
  * PC（各コンポーネント制御、iPadへのWeb UI提供用）
  * iPad（PC操作、テザリング用）
 
 構成図としては@<img>{kousei}となり、これらを現地で組み立て・配線を行います。
 設営・撤収時に手間、またあまりキレイな配置や配線できず雑然としていますので、厳しく改善致します。としたいです。
-//image[kousei][構成図][scale=1]
+//imagew[kousei][構成図][scale=1]
 #@#flowchart LR
 #@#  CM[コインメック]
 #@#  BV[ビルバリ]
@@ -123,7 +122,7 @@ PCの要件に記載した「USB Gadget Driver」ですが、
 何に使うかといえばSquare Terminal専用ハブを不要にするために@<bou>{使いたかった}です。
 
 Square Terminal専用ハブはSquare TerminalとUSB Type-Cで接続され、これを利用するとSquare TerminalからEthernet接続が行なえます@<fn>{sqhub}。
-この精算機内ではこれを利用してPCとSquare TerminalをEthernetで接続し、PC内でNAPTしiPadのテザリング回線からインターネットに出ていく構成としています。
+この精算機内ではこの専用ハブを利用してPCとSquare TerminalをEthernetで接続し、PC内でNAPTしiPadのテザリング回線からインターネットに出ていく構成としています。
 //footnote[sqhub][キャッシュドロワーやレシートプリンターなどの周辺機器接続のためにも使われるようですが、今回は使っていないので割愛します。]
 
 でもType-CでEthernet？それならRaspberry Pi 4でUSB Gadget Driverのg_etherを使えば、Square Terminalと直結できるのでは？という気がしてきます。
@@ -133,8 +132,8 @@ Square Terminal専用ハブはSquare TerminalとUSB Type-Cで接続され、こ�
 //footnote[sp1][特に解析などはしていませんが、この辺数行だけ総集編の「COSMIC L0 SP1」に書いていました。お餅の方は探してね！]
 
 Raspberry Pi 4ではUSBProxy@<fn>{usbproxy}のようなUSB Snifferも使えるようなので、今後Square Terminal専用ハブの通信は見てみるつもりです。
-なお、Raspberry Pi 4のUSB Gadget Driverは、一般には電源供給用として接続するUSB Type-Cポートを用います。
-つまり、この状態で電源供給はGPIOから行う必要がありますが、今回この点もあまり考えておらずこれも今後の課題です。
+なお、Raspberry Pi 4のUSB Gadget Driverは、一般には電源供給用として用意されているUSB Type-Cポートを用います。
+つまり、USB Gadget Driverを利用する場合の電源供給はGPIOから行う必要がありますが、今回この点もあまり考えておらずこれも今後の課題です。
 //footnote[usbproxy][@<href>{https://github.com/nesto-software/USBProxy}]
 
 
@@ -284,6 +283,7 @@ povoにトラブルが起きると使えなくなるわけで、次の対策案�
   専用ルータとVPSのセットアップが必要で、セットアップ後専用ルータ経由でパケットを流すとVPSに飛び、そのVPSがインターネットの出口となります。
   名前のとおりMPTCPが利用されていますが、UDP/ICMPもカプセル化して転送できるようです。
   ルータはRaspberry Piでも構築でき今回にちょうど良い…と思いましたが、OpenWRTをベースとしているためRaspberry Pi OSの機能が使えなくなること、そして2回線目の確保を考えるうちに現状で十分かな…という気になり見送りました。
+  @<br>{}
 : 公衆無線LANの利用
   公衆無線LANの利用も考えました。
   セキュリティ的には流れる通信はすでにHTTPSとなっており、もちろんサーバ証明書の検証もしているので良いかと。
@@ -346,7 +346,7 @@ Redundant scheduler@<fn>{redundant}も使えるようなので、現状モバイ
 3回目もOHPフィルムが熱で反ったことで若干波打ったりかすれたりはありますが、許容範囲でしょう。
 //subfig[熱転写を試した結果]{
 //image[onetwo][1回目（左）と2回目（右）][scale=0.7]
-//image[san][3回目（精算機全体込み）][scale=0.25]
+//image[san][3回目（精算機全体込み）][scale=0.28]
 //}
 
 ここで、1回目は普段の造形どおりとし、2回目は各種パタメータとZ軸を調整…したつもりが正負を間違えて失敗、3回目はZ軸をきちんと調整したという状況です。

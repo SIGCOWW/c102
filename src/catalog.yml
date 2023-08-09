@@ -1,5 +1,5 @@
-PREDEF:
-  - intro.re
+#PREDEF:
+#  - intro.re
 
 CHAPS:
   - itezap.re
